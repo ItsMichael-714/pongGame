@@ -29,7 +29,7 @@ screen.onkey(l_paddle.go_dn, "s")
 
 game_on = True
 while game_on:
-    time.sleep(.1)
+    time.sleep(ball.ball_speed)
     screen.update()
     ball.move_ball()
 
@@ -40,29 +40,29 @@ while game_on:
     # detect collision with paddle
     if ball.distance(r_paddle) < 50 and ball.xcor() > 400 or ball.distance(l_paddle) < 50 and ball.xcor() < -400:
         ball.paddle_bounce()
+        ball.ball_speed *= .5
 
     # detect missed paddle and award points
-
     if ball.xcor() > 422:  # when left player scores
-        time.sleep(1)
+        time.sleep(ball.ball_speed)
         ball.reset_position()
         ball.paddle_bounce()  # changes the direction so the other player gets first serve
         l_scoreboard.increase_score(l_player)
         l_scoreboard.update_scoreboard(l_player)
+        if l_scoreboard.score == play_to_points:  # Check for end of game and winner
+            print(l_scoreboard.score)
+            l_scoreboard.game_over(l_player)
+            game_on = False
     elif ball.xcor() < -422:  # when right player scores
         time.sleep(1)
         ball.reset_position()
         ball.paddle_bounce()  # changes the direction so the other player gets first serve
         r_scoreboard.increase_score(r_player)
         r_scoreboard.update_scoreboard(r_player)
+        if r_scoreboard.score == play_to_points:  # Check for end of game and winner
+            print(r_scoreboard.score)
+            r_scoreboard.game_over(r_player)
+            game_on = False
 
-    if r_scoreboard.score == play_to_points:
-        print(r_scoreboard.score)
-        r_scoreboard.game_over(r_player)
-        game_on = False
-    elif l_scoreboard.score == play_to_points:
-        print(l_scoreboard.score)
-        l_scoreboard.game_over(l_player)
-        game_on = False
 
 screen.exitonclick()
